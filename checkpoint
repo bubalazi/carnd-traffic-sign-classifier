@@ -1,0 +1,2 @@
+model_checkpoint_path: "lenets"
+all_model_checkpoint_paths: "lenets"
