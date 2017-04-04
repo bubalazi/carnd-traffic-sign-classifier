@@ -17439,7 +17439,7 @@ iIiIiPQ5XeAREREREREREelzusAjIiIiIiIiItLn/jcEX+ZpeVjpZwAAAABJRU5ErkJggg==
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">balance_classes_out</span><span class="p">(</span>
     <span class="n">train</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">],</span> 
     <span class="n">train</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">],</span>
-    <span class="n">threshold</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="o">=</span><span class="s1">&#39;maxbalanced&#39;</span><span class="p">,</span>
     <span class="n">operations</span><span class="o">=</span><span class="p">[</span><span class="n">translate</span><span class="p">,</span> <span class="n">affine</span><span class="p">,</span> <span class="n">inward_perspective</span><span class="p">])</span>
 <span class="c1"># Show results</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.figsize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">22</span>
@@ -22111,7 +22111,7 @@ HgI4smfY09bMjwAAAABJRU5ErkJggg==
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[96]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">mu</span> <span class="o">=</span> <span class="mf">0.01</span>
@@ -22194,16 +22194,20 @@ HgI4smfY09bMjwAAAABJRU5ErkJggg==
     <span class="c1"># Conv2D wrapper, with bias and relu activation</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">conv2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">padding</span><span class="o">=</span><span class="n">pad</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">bias_add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="c1">#     print(&quot;Size after conv2d: {}&quot;.format(x.shape))</span>
+    <span class="k">return</span> <span class="n">x</span>
 
 <span class="k">def</span> <span class="nf">avgpool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="s1">&#39;VALID&#39;</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">avg_pool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">strides</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">padding</span><span class="o">=</span><span class="n">pad</span><span class="p">)</span>
-
+    <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">avg_pool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">strides</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">padding</span><span class="o">=</span><span class="n">pad</span><span class="p">)</span>
+<span class="c1">#     print(&quot;Size after avgpool: {}&quot;.format(x.shape))</span>
+    <span class="k">return</span> <span class="n">x</span>
 
 <span class="k">def</span> <span class="nf">fullcon</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="n">fc</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">W</span><span class="p">)</span>
     <span class="n">fc</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">bias_add</span><span class="p">(</span><span class="n">fc</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">fc</span><span class="p">)</span>
+    <span class="n">fc</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">fc</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fc</span>
 
 <span class="k">def</span> <span class="nf">LeNet</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">biases</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
     <span class="n">conv1</span> <span class="o">=</span> <span class="n">conv2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weights</span><span class="p">[</span><span class="s1">&#39;wc1&#39;</span><span class="p">],</span> <span class="n">biases</span><span class="p">[</span><span class="s1">&#39;bc1&#39;</span><span class="p">])</span>
@@ -22247,14 +22251,17 @@ HgI4smfY09bMjwAAAABJRU5ErkJggg==
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>(1, 43)
-[[-0.99996722 -0.75626969 -0.925336    0.82942384  0.57501549  1.05531824
-   1.04494917  2.22541285 -1.19726515  1.93408251  1.01885164  0.37599927
-   1.77220857  0.50212693 -3.18954372  4.11279917 -1.45122099 -0.18098281
-   1.97914338  1.12660265 -2.18505383  0.51753879 -1.04504824 -0.41704425
-  -0.61430532 -1.04909837  3.26404953  1.4727217   0.11942044  0.19491279
-   0.21325152 -2.02282739  0.97077084  1.36327636 -0.82700092  0.51687688
-   0.20705181 -0.60285872 -0.28682327 -1.07147789 -1.39595771 -1.1232512
-   0.13199434]]
+[[  2.69879580e-01   4.66319650e-01  -9.61673856e-01   3.13263178e-01
+   -7.80264378e-01  -1.47745621e+00   2.77310038e+00   2.00165248e+00
+    2.90862322e-01   1.43471134e+00   2.91129088e+00   9.13926959e-01
+   -3.34471703e-01  -3.46515685e-01   2.30436027e-01   1.81189942e+00
+   -2.49373257e-01   1.02092683e+00   2.26892009e-02  -2.04671907e+00
+   -1.52619338e+00  -1.69527173e-01  -6.24761224e-01  -2.44475886e-01
+    3.22121322e-01  -6.71561241e-01   1.28081590e-02  -1.49765885e+00
+   -6.46131754e-01   3.08573902e-01  -3.57147783e-01   7.34532058e-01
+    2.59152651e+00   3.82089525e-01   1.04268812e-01  -1.31142497e-01
+    2.06522942e-02   7.89925396e-01   1.41704589e-01  -2.15786695e-03
+   -1.78320706e+00   4.21332628e-01  -3.88761088e-02]]
 </pre>
 </div>
 </div>
