@@ -2,6 +2,11 @@
 Author: Lyuboslav Petrov
 
 <!--Image References-->
+[snow]: ./data/de_traffic_signs/1_snow.png "General Caution in Snow"
+[noentry]: ./data/de_traffic_signs/2_noentry.png "No Entry"
+[noentry2]: ./data/de_traffic_signs/3_noentry.png "No Entry drawing"
+[roundabout]: ./data/de_traffic_signs/4_roundabout.png "Roundabout"
+[limit30]: ./data/de_traffic_signs/5_limit30.png "Speed Limit 30"
 [softmax]: ./doc/softmax.png "Softmax probabilities"
 [real-world]: ./doc/real-world.png "Real World Accuracy"
 [results]: ./doc/results.png "Training Results after 50 Epochs"
@@ -104,6 +109,11 @@ Images where then converted to grayscale and normalized between 0 and 1.
 
 ### Network Architecture
 
+Sevaral network architectures were iterated through. First, the LeNet convolutional network was taken and adapted to work with the traffic sign data set - adapting it to 43 categories, instead of 10. On the first iterations it was
+observed that the 3 channels of the image do not contribute towards better accuracy and the pre-processing now included not only normalization, but also a colorspace conversion to grayscale. In addition, multiple filter sizes where tested with the LeNet architecture, when the necessity of paramtrization was recognized (see below). Further, two dropout layers were added after the first two Fully-Connected layers which brought the accuracy towards 0.8-0.9. Multiple filter depths were tested, and with filter depths of (64, 128) for the first two convolutional layers, the network reached 0.91 accuracy. A further test was made with addition of a third convolutional layer, where final results came to ~0.95 accuracy. 
+
+Details of the layers dimensions can be found below.
+
 In order to iterate through multiple network architectures, it is necessary
 to make the network models parametric, so interdependencies between variables can
 be solved dynamically.
@@ -194,17 +204,17 @@ depths (**d_c(0,1,2) = 9, 54, 220**). The following layers chosen are three subs
 |8  | Convolution (5x5x216) | 1x1 Stride, Valid Padding                     | 1x1x216
 |9  | ReLu                  |                                               | 1x1x216
 |10 | Average pooling       | 2x2 stride                                    | 1x1x216
-|11 | Fully connected		    | Flattened network (1x216)                     | 1x480
-|12 | Dropout       		    | val=0.85                                      | 1x480
-|13 | Fully connected		    |                                               | 1x240
-|14 | Dropout       		    | val=0.85                                      | 1x240
-|15 | Fully connected		    |                                               | 1x43
+|11 | Fully connected		| Flattened network (1x216)                     | 1x480
+|12 | Dropout       		| val=0.85                                      | 1x480
+|13 | Fully connected		|                                               | 1x240
+|14 | Dropout       		| val=0.85                                      | 1x240
+|15 | Fully connected		|                                               | 1x43
 
 ### Train - Validate - Test
 
 The network was trained and optimized for **50 Epochs** with a **Batch Size of 128** using:
-
-| # | Layer                 |     Description	                             |  Output
+For each image, discuss what quality or qualities might be difficult to classify.
+| # | Layer                 |     Description	                            |  Output
 |:-:|:---------------------:|:---------------------------------------------:|:-------------------:|
 | 1 | Softmax               | Cross Entropy with Logits                     | 1x43
 | 2 | Loss Operation        | Reduce entropy with mean                      | 1x43
@@ -230,6 +240,49 @@ resulted in accuracy of **0.30**.
 The softmax probabilities 5 randomly chosen real-world images are as follows:
 
 ![][softmax]
+
+The individual images can below be seen in full size with their supporting discussion.
+
+#### 1. General Caution in Snow
+
+![][snow]
+
+The top 5 probabilities are far away from correct.
+
+Difficulties for classification:
+1. Snow! This is an image for a General Caution sign in the winter, partially covered in snow.
+2. Size ratio - the sign area is much smaller than the complete image area (<< 0.5), whereas the training set had a sign to image size ratio of approx 0.5
+3. Multiple Signs and overlayed text
+
+#### 2. No Entry under a high angle
+
+![][noentry]
+
+Difficulties for classification:
+
+1. Sign centre is shifted towards the upper edge of the image
+2. The pose of the sign relative to the camera is not favorable to the algorithm
+3. Size ratio
+
+#### 3. No Entry drawing
+
+![][noentry2]
+
+This image is a drawing and is as expected classified with probability of 1.0 
+
+#### 4. Roundabout
+
+![][roundabout]
+
+The roundabout mandatory sign is as well classified with a high probability.
+
+#### 5. Small Limit 30
+
+![][limit30]
+
+Problems with this image are:
+
+1. Size ratio (sign area to image area)
 
 ## Discussion
 
